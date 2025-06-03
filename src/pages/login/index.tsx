@@ -6,10 +6,11 @@ import { useNavigate  } from "react-router-dom";
 
 import { useForm } from "react-hook-form";
 import { api } from '../../services/api';
-import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 import { Container, Title, Column, TitleLogin, SubtitleLogin, EsqueciText, Row, Wrapper } from './styles';
+import { IFormData } from './types';
 
 const schema = yup.object({
     email: yup.string().email('email não é válido').required('Campo obrigatório'),
@@ -24,14 +25,14 @@ const schema = yup.object({
 const Login = () => {
     const navigate = useNavigate();
     
-    const { control, handleSubmit, formState: { errors, isValid } } = useForm({
+    const { control, handleSubmit, formState: { errors, isValid } } = useForm<IFormData>({
         resolver: yupResolver(schema),
         mode: 'onChange',
     });
 
     console.log(isValid, errors);
 
-    const onSubmit = async (formData) => {
+    const onSubmit = async (formData:IFormData) => {
         try{
             const {data} = await api.get(`/users?email=${formData.email}&senha=${formData.senha}`);
             

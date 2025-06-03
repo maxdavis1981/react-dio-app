@@ -6,13 +6,15 @@ import { useNavigate  } from "react-router-dom";
 
 import { useForm } from "react-hook-form";
 import { api } from '../../services/api';
-import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { IFormData } from './types';
 
-import { Container, Title, Column, TitleLogin, SubtitleLogin, Row, Text, CriarText, Wrapper } from './styles';
+import { Container, Title, Column, TitleLogin, SubtitleLogin, Row, Text, CriarText, Wrapper }
+ from './styles';
 
 const schema = yup.object({
-    nome: yup.string().min('O Nome deve ter no mínimo 3 caracteres').required('Campo obrigatório'),
+    nome: yup.string().min(3,'O Nome deve ter no mínimo 3 caracteres').required('Campo obrigatório'),
     email: yup.string().email('email não é válido').required('Campo obrigatório'),
     senha: yup.string().min(3, 'A senha deve ter no mínimo 3 caracteres')
    // .matches(/[A-Z]/, 'Deve conter pelo menos uma letra maiúscula')
@@ -25,14 +27,14 @@ const schema = yup.object({
 const Cadastro = () => {
     const navigate = useNavigate();
     
-    const { control, handleSubmit, formState: { errors, isValid } } = useForm({
+    const { control, handleSubmit, formState: { errors, isValid } } = useForm<IFormData>({
         resolver: yupResolver(schema),
         mode: 'onChange',
     });
 
     console.log(isValid, errors);
 
-    const onSubmit = async (formData) => {
+    const onSubmit = async (formData:IFormData) => {
         try{
             const {data} = await api.get(`/users?email=${formData.email}&senha=${formData.senha}`);
             
